@@ -66,10 +66,10 @@ $o-grays: (
     900: $o-gray-900,
 ) !default;
 
-// $o-community-color: #71639e !default;
-$o-community-color: #050C9C !default;
-// $o-enterprise-color: #714B67 !default;
-$o-enterprise-color: #A7E6FF !default;
+// Primary colour
+$o-community-color: #7FA1C3 !default;
+// Secondary colour
+$o-enterprise-color: #6482AD !default;
 $o-enterprise-action-color: #017e84 !default;
 
 $o-brand-odoo: $o-community-color !default;
