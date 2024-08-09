@@ -81,8 +81,8 @@
 
                 <!-- Odoo Logo -->
                 <div class="pos-odoo_logo_container">
-                    <span>Powered by </span>
-                    <div class="logo" />
+                    <!-- <span>Powered by </span>
+                    <div class="logo" /> -->
                 </div>
             </div>
         </div>
