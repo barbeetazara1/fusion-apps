@@ -153,6 +153,9 @@
             ('remove', 'web/static/src/webclient/actions/reports/layout_assets/**/*'),
             ('remove', 'web/static/src/webclient/actions/**/*css'),
             'web/static/src/webclient/company_service.js',
+
+            # FUSION CUSTOM
+            'point_of_sale/static/src/scss/fusion-custom.scss',
         ],
         # Bundle that starts the pos, loaded on /pos/ui
         'point_of_sale.assets_prod': [
