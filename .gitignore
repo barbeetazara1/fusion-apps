@@ -5,4 +5,6 @@ __pycache__/
 /settings.json
 .DS_Store
 .tar
-
+addons/__pycache__
+addons_base/__pycache__
+addons/*/.pyc
