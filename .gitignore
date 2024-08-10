@@ -7,4 +7,4 @@ __pycache__/
 .tar
 addons/__pycache__
 addons_base/__pycache__
-addons/*/.pyc
+addons/*.pyc
