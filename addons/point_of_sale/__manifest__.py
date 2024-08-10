@@ -70,6 +70,8 @@
             'point_of_sale/static/src/scss/fusion_custom.scss',
             'point_of_sale/static/src/backend/tours/point_of_sale.js',
             'point_of_sale/static/src/backend/debug_manager.js',
+            # FUSION CUSTOM
+            'point_of_sale/static/src/scss/fusion-custom.scss',
         ],
         'web.assets_tests': [
             'barcodes/static/tests/helpers.js',
@@ -153,8 +155,6 @@
             ('remove', 'web/static/src/webclient/actions/reports/layout_assets/**/*'),
             ('remove', 'web/static/src/webclient/actions/**/*css'),
             'web/static/src/webclient/company_service.js',
-
-            # FUSION CUSTOM
         ],
         # Bundle that starts the pos, loaded on /pos/ui
         'point_of_sale.assets_prod': [
