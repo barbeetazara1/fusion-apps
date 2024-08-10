@@ -67,7 +67,7 @@
         # web assets
         'web.assets_backend': [
             'point_of_sale/static/src/scss/pos_dashboard.scss',
-            'point_of_sale/static/src/scss/pos_dashboard.scss',
+            'point_of_sale/static/src/scss/fusion_custom.scss',
             'point_of_sale/static/src/backend/tours/point_of_sale.js',
             'point_of_sale/static/src/backend/debug_manager.js',
         ],
@@ -155,7 +155,6 @@
             'web/static/src/webclient/company_service.js',
 
             # FUSION CUSTOM
-            'point_of_sale/static/src/scss/fusion-custom.scss',
         ],
         # Bundle that starts the pos, loaded on /pos/ui
         'point_of_sale.assets_prod': [
