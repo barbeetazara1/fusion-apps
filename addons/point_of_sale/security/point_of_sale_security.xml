@@ -16,6 +16,9 @@
         <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
     </record>
 
+    <!-- Point Of Sale Views Category -->
+    
+
     <data noupdate="1">
 
     <record id="rule_pos_bank_statement_account_user" model="ir.rule">

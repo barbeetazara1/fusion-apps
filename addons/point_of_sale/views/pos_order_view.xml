@@ -232,6 +232,7 @@
         <field name="view_mode">tree,form,kanban,pivot</field>
         <field name="view_id" eval="False"/>
         <field name="domain">[]</field>
+         <field name="context">{'group_by': 'date_order:day'}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_empty_folder">
                 No orders found

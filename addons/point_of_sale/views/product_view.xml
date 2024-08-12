@@ -126,7 +126,9 @@
     <menuitem id="menu_pos_products"
         action="product_template_action_pos_product"
         parent="point_of_sale.pos_config_menu_catalog"
-        sequence="5"/>
+        sequence="5"
+        groups="group_pos_manager"
+        />
     <menuitem id="pos_config_menu_action_product_product"
         name="Product Variants"
         parent="point_of_sale.pos_config_menu_catalog"
@@ -137,6 +139,7 @@
         name="Product Combos" 
         parent="point_of_sale.pos_config_menu_catalog" 
         action="point_of_sale.action_pos_combo" 
+        groups="group_pos_manager"
         sequence="15" />
     <menuitem id="pos_config_menu_action_product_pricelist"
         parent="point_of_sale.pos_config_menu_catalog"
