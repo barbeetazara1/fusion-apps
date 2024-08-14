@@ -5,11 +5,13 @@
         <field name="tag">action_spreadsheet_dashboard</field>
     </record>
 
+    <!-- Hide menu dashboards -->
     <menuitem
         id="spreadsheet_dashboard_menu_root"
         name="Dashboards"
         action="ir_actions_dashboard_action"
         web_icon="spreadsheet_dashboard,static/description/icon.png"
+        groups="base.group_system"
         sequence="37"/>
 
     <menuitem
