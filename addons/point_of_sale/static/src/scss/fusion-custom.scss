@@ -1,3 +1,15 @@
 .o_kanban_dashboard .o_kanban_renderer .o_kanban_record > div:not(.o_dropdown_kanban) {
     border-radius: 1em !important;
 }
+
+.btn-primary {
+    color: #FFFFFF;
+    background-color: #cba228;
+    /* border-color: #7FA1C3; */
+}
+
+.btn-primary:hover {
+    color: #FFFFFF;
+    background-color: #cb8f28;
+    border-color: #466e96;
+}
