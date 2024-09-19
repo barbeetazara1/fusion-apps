@@ -42,17 +42,20 @@ class Home(http.Controller):
         ensure_db()
         if not request.session.uid:
             try:
-                session_id = request.httprequest.cookies.get('session_id')
-                request.session.sid = session_id                
-                # Restore the user on the environment, it was lost due to auth="none"
+                
+                session_id = request.httprequest.cookies.get('session_id')                
+                uid = request.httprequest.cookies.get('uid')
+                
+                request.session.sid = session_id                                         
+                request.update_env(user=uid)
                 request.update_env(user=request.session.uid)                    
                 context = request.env['ir.http'].webclient_rendering_context()
                 response = request.render('web.webclient_bootstrap', qcontext=context)
                 response.headers['X-Frame-Options'] = 'DENY'
                 return response
-            except:
-                _logger.info(f'Oh noooo')                
-                return u_redirect('https://google.com')
+            except Exception as err:
+                _logger.error(f'Detail - {err}')                
+                return u_redirect('https://internal-fusion-erp.site/login')
                 
         if kw.get('redirect'):
             return request.redirect(kw.get('redirect'), 303)
