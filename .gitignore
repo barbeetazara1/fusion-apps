@@ -8,3 +8,4 @@ __pycache__/
 addons/__pycache__
 addons_base/__pycache__
 addons/*.pyc
+addons/*/*.pyc
