@@ -13,6 +13,7 @@ from odoo.modules import module
 from odoo.exceptions import AccessError, UserError, AccessDenied
 from odoo.http import request
 from odoo.tools.translate import _
+from werkzeug.utils import redirect as u_redirect
 
 
 _logger = logging.getLogger(__name__)
@@ -84,4 +85,9 @@ class Session(http.Controller):
     @http.route('/web/session/logout', type='http', auth="none")
     def logout(self, redirect='/web'):
         request.session.logout(keep_db=True)
-        return request.redirect(redirect, 303)
+        red = u_redirect('https://internal-fusion-erp.site/login/')
+        red.delete_cookie('session_id', domain='.internal-fusion-erp.site')
+        red.delete_cookie('tz', domain='.internal-fusion-erp.site')
+        red.delete_cookie('uid', domain='.internal-fusion-erp.site')
+        red.delete_cookie('frontend_lang', domain='.internal-fusion-erp.site')
+        return red

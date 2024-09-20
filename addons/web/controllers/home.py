@@ -39,40 +39,32 @@ class Home(http.Controller):
     def web_client(self, s_action=None, **kw):
 
         # Ensure we have both a database and a user
-        ensure_db()
-        if not request.session.uid:
-            try:
-                session_id = request.httprequest.cookies.get('session_id')
-                request.session.sid = session_id                
-                # Restore the user on the environment, it was lost due to auth="none"
+        ensure_db()                
+        # Ambil session ID dari cookie Django
+        django_sessionid = request.httprequest.cookies.get('session_id')
+        _logger.info(f'SESSION START {django_sessionid}')
+            
+        if django_sessionid:
+            # Verifikasi session ID dengan Django
+            uid = self._get_uid_from_django_session(django_sessionid)
+            if uid:
+                # Set session Odoo dengan uid yang didapat
+                request.session.uid = uid
+                _logger.info(f'Set {uid} to cookie')
                 request.update_env(user=request.session.uid)                    
                 context = request.env['ir.http'].webclient_rendering_context()
                 response = request.render('web.webclient_bootstrap', qcontext=context)
                 response.headers['X-Frame-Options'] = 'DENY'
                 return response
-            except:
-                _logger.info(f'Oh noooo')                
-                return u_redirect('https://google.com')
-                
-        if kw.get('redirect'):
-            return request.redirect(kw.get('redirect'), 303)
-        if not security.check_session(request.session, request.env):
-            raise http.SessionExpiredException("Session expired")
-        if not is_user_internal(request.session.uid):
-            return request.redirect('/web/login_successful', 303)
-
-        # Side-effect, refresh the session lifetime
-        request.session.touch()
-
-        # Restore the user on the environment, it was lost due to auth="none"
-        request.update_env(user=request.session.uid)
-        try:
-            context = request.env['ir.http'].webclient_rendering_context()
-            response = request.render('web.webclient_bootstrap', qcontext=context)
-            response.headers['X-Frame-Options'] = 'DENY'
-            return response
-        except AccessError:
-            return request.redirect('/web/login?error=access')
+            else:
+                _logger.error(f'Fail redirect to landing')
+                # Session tidak valid, arahkan ke login Odoo
+                return u_redirect('https://internal-fusion-erp.site/')
+        else:
+            # Tidak ada sessionid, arahkan ke login Odoo
+            _logger.error(f'Oops no cookie set')
+            return u_redirect('https://systema.id/')
+            
 
     @http.route('/web/webclient/load_menus/<string:unique>', type='http', auth='user', methods=['GET'])
     def web_load_menus(self, unique, lang=None):
@@ -131,3 +123,39 @@ class Home(http.Controller):
     @http.route(['/robots.txt'], type='http', auth="none")
     def robots(self, **kwargs):
         return "User-agent: *\nDisallow: /\n"
+    
+    def _get_uid_from_django_session(self, sessionid):
+        """
+        Verifikasi sessionid dengan Django dan dapatkan user ID (uid) Odoo.
+        """
+        
+        # Verifikasi session_id
+        _logger.info(f'Mencoba cari sesi tabel sesi {sessionid}')
+        user = request.env['res.users'].sudo().browse(request.session.uid)
+
+        if user and user.id:
+            # If a valid session is found, fetch the associated user
+            _logger.info(f'Dapat uid {user.id}')
+            return user.id
+        _logger.error(f'UID Tidak ada')
+        return None
+
+    def _decode_django_session(self, session_data):
+        """
+        Dekode session_data dari format Django.
+        """
+        # Metode ini tergantung pada bagaimana Django menyimpan session
+        # Jika menggunakan signed_cookies atau database sessions dengan serializer JSON
+        # Contoh untuk database sessions dengan serializer JSON:
+
+        import base64
+        import json
+
+        try:
+            decoded_data = base64.b64decode(session_data)
+            session_dict = json.loads(decoded_data)
+            return session_dict
+        except Exception as e:
+            # Tangani exception
+            pass
+        return {}
