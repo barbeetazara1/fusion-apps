@@ -13,7 +13,6 @@ from odoo.service import security
 from odoo.tools import ustr
 from odoo.tools.translate import _
 from .utils import ensure_db, _get_login_redirect_url, is_user_internal
-from werkzeug.utils import redirect as u_redirect
 
 
 _logger = logging.getLogger(__name__)
@@ -41,22 +40,7 @@ class Home(http.Controller):
         # Ensure we have both a database and a user
         ensure_db()
         if not request.session.uid:
-            try:
-                
-                session_id = request.httprequest.cookies.get('session_id')                
-                uid = request.httprequest.cookies.get('uid')
-                
-                request.session.sid = session_id                                         
-                request.update_env(user=uid)
-                request.update_env(user=request.session.uid)                    
-                context = request.env['ir.http'].webclient_rendering_context()
-                response = request.render('web.webclient_bootstrap', qcontext=context)
-                response.headers['X-Frame-Options'] = 'DENY'
-                return response
-            except Exception as err:
-                _logger.error(f'Detail - {err}')                
-                return u_redirect('https://internal-fusion-erp.site/login')
-                
+            return request.redirect_query('/web/login', query=request.params, code=303)
         if kw.get('redirect'):
             return request.redirect(kw.get('redirect'), 303)
         if not security.check_session(request.session, request.env):
@@ -103,7 +87,51 @@ class Home(http.Controller):
 
     @http.route('/web/login', type='http', auth="none")
     def web_login(self, redirect=None, **kw):
-        return u_redirect('https://internal-fusion-erp.site/login/')  
+        ensure_db()
+        request.params['login_success'] = False
+        if request.httprequest.method == 'GET' and redirect and request.session.uid:
+            return request.redirect(redirect)
+
+        # simulate hybrid auth=user/auth=public, despite using auth=none to be able
+        # to redirect users when no db is selected - cfr ensure_db()
+        if request.env.uid is None:
+            if request.session.uid is None:
+                # no user -> auth=public with specific website public user
+                request.env["ir.http"]._auth_method_public()
+            else:
+                # auth=user
+                request.update_env(user=request.session.uid)
+
+        values = {k: v for k, v in request.params.items() if k in SIGN_UP_REQUEST_PARAMS}
+        try:
+            values['databases'] = http.db_list()
+        except odoo.exceptions.AccessDenied:
+            values['databases'] = None
+
+        if request.httprequest.method == 'POST':
+            try:
+                uid = request.session.authenticate(request.db, request.params['login'], request.params['password'])
+                request.params['login_success'] = True
+                return request.redirect(self._login_redirect(uid, redirect=redirect))
+            except odoo.exceptions.AccessDenied as e:
+                if e.args == odoo.exceptions.AccessDenied().args:
+                    values['error'] = _("Wrong login/password")
+                else:
+                    values['error'] = e.args[0]
+        else:
+            if 'error' in request.params and request.params.get('error') == 'access':
+                values['error'] = _('Only employees can access this database. Please contact the administrator.')
+
+        if 'login' not in values and request.session.get('auth_login'):
+            values['login'] = request.session.get('auth_login')
+
+        if not odoo.tools.config['list_db']:
+            values['disable_database_manager'] = True
+
+        response = request.render('web.login', values)
+        response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+        response.headers['Content-Security-Policy'] = "frame-ancestors 'self'"
+        return response
 
     @http.route('/web/login_successful', type='http', auth='user', website=True, sitemap=False)
     def login_successful_external_user(self, **kwargs):
