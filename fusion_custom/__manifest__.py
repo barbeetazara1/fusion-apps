@@ -18,12 +18,13 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['web'],
+    'depends': ['web', 'base'],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
         'views/login_page.xml',
+        'views/users/res_users_views.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
