@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="cron_auto_archive_trial" model="ir.cron">
+            <field name="name">Archive Expired Users</field>
+            <field name="model_id" ref="model_res_users"/>
+            <field name="state">code</field>
+            <field name="code">model._auto_archive_users()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="nextcall" eval="(DateTime.now() + timedelta(days=0)).replace(hour=17, minute=0, second=0).strftime('%Y-%m-%d %H:%M:%S')" /> <!--Hardcode to 9 am-->
+            <field name="active">True</field>
+            <field name="doall">False</field>
+        </record>
+    </data>
+</odoo>

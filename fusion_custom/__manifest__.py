@@ -23,6 +23,7 @@
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
+        'data/ir_cron_job.xml',
         'views/login_page.xml',
         'views/users/res_users_views.xml',
     ],
