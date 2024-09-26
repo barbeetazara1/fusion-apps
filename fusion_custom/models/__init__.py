@@ -1,3 +1,4 @@
 # -*- coding: utf-8 -*-
 
-from . import res_users
+from . import users
+from . import product

@@ -18,14 +18,15 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['web', 'base'],
+    'depends': ['web', 'base','product'],
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'data/ir_cron_job.xml',
         'views/login_page.xml',
         'views/users/res_users_views.xml',
+        'views/products/product_template.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
